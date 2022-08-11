@@ -214,13 +214,13 @@ func (mu *Mutator) executeTests(ctx context.Context) report.Results {
 		log.Infoln("Executing mutation testing on covered mutants...")
 	}
 	currDir, _ := os.Getwd()
-	rootWd, cl, err := mu.wdManager.Get()
+	rootWd, err := mu.wdManager.Get("tmp")
 	if err != nil {
 		panic("error, this is temporary")
 	}
 	defer func(d string) {
 		_ = os.Chdir(d)
-		cl()
+		mu.wdManager.Clean()
 	}(currDir)
 
 	workingDir := filepath.Join(rootWd, mu.module.PkgDir)

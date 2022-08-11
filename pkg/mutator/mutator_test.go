@@ -85,9 +85,11 @@ type dealerStub struct {
 	t *testing.T
 }
 
-func (d dealerStub) Get() (string, func(), error) {
-	return d.t.TempDir(), func() {}, nil
+func (d dealerStub) Get(_ string) (string, error) {
+	return d.t.TempDir(), nil
 }
+
+func (d dealerStub) Clean() {}
 
 func TestMutations(t *testing.T) {
 	t.Parallel()
@@ -393,7 +395,7 @@ func TestMutatorRun(t *testing.T) {
 	}
 
 	timeoutDifference := absTimeDiff(holder.timeout, expectedTimeout*2)
-	diffThreshold := 70 * time.Microsecond
+	diffThreshold := 100 * time.Microsecond
 	if timeoutDifference > diffThreshold {
 		t.Errorf("expected timeout to be within %s from the set timeout, got %s", diffThreshold, timeoutDifference)
 	}
